@@ -142,7 +142,7 @@ Write-Host "$DB_Sim_Time Sekunden" -ForegroundColor Green
 
 # --- CLEANUP ---
 Remove-Item "$LocalDrive\*" -Force -ErrorAction SilentlyContinue
-for ($m = 1; $m -le 4096; $m++) { Remove-Item "$SMBShare\mini_$m.dat" -Force -ErrorAction SilentlyContinue }
+for ($m = 1; $m -le 1024; $m++) { Remove-Item "$SMBShare\mini_$m.dat" -Force -ErrorAction SilentlyContinue }
 Remove-Item "$SMBShare\test_iops.dat", "$SMBShare\large_5gb.dat" -Force -ErrorAction SilentlyContinue
 
 # --- 9. SCORE BERECHNUNG (Zielkorridore an neue Zeiten angepasst) ---
@@ -161,6 +161,10 @@ if ([double]$DB_Sim_Time -le 0.001) { $Score_Work = 10.0 } else { $Score_Work = 
 
 $TotalScore  = [math]::Round($Score_IOPS_C + $Score_IOPS_SMB + $Score_SMB_MBs + $Score_Net + $Score_CPU + $Score_RAM + $Score_Work)
 $StatusColor = if ($TotalScore -ge 75) { "#2ecc71" } elseif ($TotalScore -ge 50) { "#f1c40f" } else { "#e74c3c" }
+
+Write-Host $ENv:computername
+
+Write-Host (Get-Date)
 
 # --- 10. HTML REPORT GENERIEREN ---
 $ReportPath = "C:\admin\Benchmark_Report.html"
