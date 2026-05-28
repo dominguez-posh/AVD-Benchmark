@@ -25,7 +25,7 @@ if (-not (Test-Path $LocalDrive)) { New-Item -ItemType Directory -Path $LocalDri
 if (-not (Test-Path "C:\admin"))   { New-Item -ItemType Directory -Path "C:\admin" | Out-Null }
 
 Write-Host "=== AVD HOST ULTRA-EXTREME-BENCHMARK START ===" -ForegroundColor Cyan
-Write-Host "Modus: v17 Maximierte Testlaufzeiten (CPU, RAM & 4096 Mini-Files)`n" -ForegroundColor Yellow
+Write-Host "Modus: v17 Maximierte Testlaufzeiten (CPU, RAM & 1024 Mini-Files)`n" -ForegroundColor Yellow
 
 # --- 1. IOPS AUF C:\ ---
 Write-Host "1/8 [DISK C] Teste lokale Festplatte (IOPS, 5s)... " -NoNewline
@@ -70,10 +70,10 @@ $ColorSMB = if ($Final_IOPS_SMB -gt 0) { "Green" } else { "Red" }
 Write-Host "$Final_IOPS_SMB IOPS" -ForegroundColor $ColorSMB
 
 # --- 3. FSLOGIX LATENZ: ERHÖHT AUF 4.096 MINI DATEIEN (Vervierfacht) ---
-Write-Host "3/8 [FSLOGIX LATENZ] Schreibe 4096 Mini-Dateien (Metadaten-Dauerlauf)... " -NoNewline
+Write-Host "3/8 [FSLOGIX LATENZ] Schreibe 1024 Mini-Dateien (Metadaten-Dauerlauf)... " -NoNewline
 $MiniData = New-Object Byte[] 4KB
 $TimerMini = [System.Diagnostics.Stopwatch]::StartNew()
-for ($m = 1; $m -le 4096; $m++) {
+for ($m = 1; $m -le 1024; $m++) {
     [System.IO.File]::WriteAllBytes("$SMBShare\mini_$m.dat", $MiniData)
 }
 $TimerMini.Stop()
@@ -81,11 +81,11 @@ $SMB_Mini_Time = [math]::Round($TimerMini.Elapsed.TotalSeconds, 2)
 Write-Host "$SMB_Mini_Time Sekunden" -ForegroundColor Green
 
 # --- 4. SMB DURCHSATZ (5 GB Schreibtest) ---
-Write-Host "4/8 [FSLOGIX THROUGHPUT] Schreibe 5 GB Testdatei... " -NoNewline
+Write-Host "4/8 [FSLOGIX THROUGHPUT] Schreibe 1 GB Testdatei... " -NoNewline
 $LargeData = New-Object Byte[] 100MB
 $Timer = [System.Diagnostics.Stopwatch]::StartNew()
 $FileStream = [System.IO.File]::Create("$SMBShare\large_5gb.dat")
-for ($g = 0; $g -lt 50; $g++) { $FileStream.Write($LargeData, 0, $LargeData.Length) }
+for ($g = 0; $g -lt 10; $g++) { $FileStream.Write($LargeData, 0, $LargeData.Length) }
 $FileStream.Close(); $FileStream.Dispose()
 $Timer.Stop()
 $SMB_Large_MBs = [math]::Round((5000 / $Timer.Elapsed.TotalSeconds), 2)
