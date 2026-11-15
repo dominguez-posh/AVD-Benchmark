@@ -4,13 +4,17 @@
 .DESCRIPTION
     Führt alle Tests fehlerfrei aus. CPU, RAM und FSLogix-Mini-Files wurden massiv verlängert.
     Generiert einen interaktiven HTML-Report unter C:\admin.
+.PARAMETER SMBShare
+    FSLogix-Freigabe für den Test, z. B. \\<storageaccount>.file.core.windows.net\<share>\fslogixbenchmark
 #>
+param(
+    [Parameter(Mandatory = $true)][string]$SMBShare
+)
 
 # --- KONFIGURATION ---
 $DiskspdPath   = ".\diskspd.exe"
 $SpeedtestPath = ".\speedtest.exe"
 $LocalDrive    = "C:\BenchmarkTest"
-$SMBShare      = "\\<storageaccount>.file.core.windows.net\sh<storageaccount>\fslogixbenchmark"
 $DatabaseFile  = "C:\BenchmarkTest\local_sim_db.sqlite"
 
 # --- ADMIN CHECK ---
